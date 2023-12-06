@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"os/exec"
+	"github.com/cli/go-gh/v2"
 	"strings"
 )
 
@@ -17,12 +17,11 @@ type PullRequest struct {
 }
 
 func (gs *GitHubService) GetOpenPullRequests() ([]PullRequest, error) {
-	cmd := exec.Command("gh", "search", "prs", "--review-requested", "@me", "--state", "open")
-	output, err := cmd.Output()
+	prs, _, err := gh.Exec("search", "prs", "--review-requested", "@me", "--state", "open")
 	if err != nil {
-		return nil, fmt.Errorf("error running git status: %v", err)
+		return nil, fmt.Errorf("failed to execute gh command: %w", err)
 	}
-	return parsePullRequests(string(output)), nil
+	return parsePullRequests(prs.String()), nil
 }
 
 func parsePullRequests(prLine string) []PullRequest {
