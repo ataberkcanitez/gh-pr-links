@@ -5,6 +5,21 @@ pr-links is a command-line tool written in Go that enhances the functionality of
 
 ### Installation
 
+Since it's GitHub CLI Extension, make sure you have [GitHub CLI](https://cli.github.com) installed on your system.
+
+To install the extension, please execute the following command:
+
+```bash
+$ gh extension install install ataberkcanitez/gh-pr-links
+```
+
+### Usage
+
+After installing the extension, please execute following command to use:
+
+```bash
+$ gh pr-links
+```
 
 ### Example Output
 
