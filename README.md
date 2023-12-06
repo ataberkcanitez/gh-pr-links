@@ -10,7 +10,7 @@ Since it's GitHub CLI Extension, make sure you have [GitHub CLI](https://cli.git
 To install the extension, please execute the following command:
 
 ```bash
-$ gh extension install install ataberkcanitez/gh-pr-links
+$ gh extension install ataberkcanitez/gh-pr-links
 ```
 
 ### Usage
