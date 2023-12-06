@@ -5,6 +5,7 @@ go 1.20
 require github.com/cli/go-gh/v2 v2.4.0
 
 require (
+	github.com/alexeyco/simpletable v1.0.0 // indirect
 	github.com/aymanbagabas/go-osc52 v1.0.3 // indirect
 	github.com/cli/safeexec v1.0.0 // indirect
 	github.com/cli/shurcooL-graphql v0.0.4 // indirect

@@ -2,25 +2,22 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/cli/go-gh/v2/pkg/api"
+	"os"
 )
 
 func main() {
-	fmt.Println("hi world, this is the gh-pr-links extension!")
-	client, err := api.DefaultRESTClient()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	response := struct {Login string}{}
-	err = client.Get("user", &response)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Printf("running as %s\n", response.Login)
-}
+	githubService := &GitHubService{}
+	cliOutputHandler := &CliOutputHandler{}
 
-// For more examples of using go-gh, see:
-// https://github.com/cli/go-gh/blob/trunk/example_gh_test.go
+	pullRequests, err := githubService.GetOpenPullRequests()
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}
+
+	if len(pullRequests) == 0 {
+		fmt.Println("No PR to show.")
+		return
+	}
+	cliOutputHandler.PrintPullRequests(pullRequests)
+}
