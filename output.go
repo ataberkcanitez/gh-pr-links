@@ -3,17 +3,19 @@ package main
 import (
 	"fmt"
 	"github.com/alexeyco/simpletable"
-	"os"
 	"strings"
 )
 
-type CliOutputHandler struct{}
+type CliOutputHandler struct {
+	prs    []PullRequest
+	Config Config
+}
 
-func (co *CliOutputHandler) PrintPullRequests(prs []PullRequest) {
+func (co *CliOutputHandler) PrintPullRequests() {
 	table := simpletable.New()
 	table.Header = prepareHeader()
-	for _, pr := range prs {
-		title := prepareTitle(pr.Title, pr.IsDraft)
+	for _, pr := range co.prs {
+		title := co.prepareTitle(pr.Title, pr.IsDraft)
 		author := prepareAuthor(pr.Author.Login, pr.IsDraft)
 		url := prepareUrl(pr.URL, pr.IsDraft)
 		owner := prepareOwner(pr.Repository.NameWithOwner, pr.IsDraft)
@@ -26,13 +28,13 @@ func (co *CliOutputHandler) PrintPullRequests(prs []PullRequest) {
 		table.Body.Cells = append(table.Body.Cells, r)
 	}
 
-	style := getStyle()
+	style := co.getStyle()
 	table.SetStyle(style)
 	fmt.Println(table.String())
 }
 
-func getStyle() *simpletable.Style {
-	selectedStyle := os.Getenv("GH_PR_STYLE")
+func (co *CliOutputHandler) getStyle() *simpletable.Style {
+	selectedStyle := co.Config.Style
 	switch selectedStyle {
 	case "StyleCompactLite":
 		return simpletable.StyleCompactLite
@@ -88,19 +90,19 @@ func prepareHeader() *simpletable.Header {
 	}
 }
 
-func prepareTitle(input string, isDraft bool) string {
+func (co *CliOutputHandler) prepareTitle(input string, isDraft bool) string {
 	textColor := green
 	if isDraft {
 		textColor = gray
 	}
-	emoji := getEmoji(isDraft)
+	emoji := co.getEmoji(isDraft)
 
 	const maxCharacters = 40
 	var result strings.Builder
 	var count int
 	words := strings.Fields(input)
 
-	useEmoji := os.Getenv("GH_PR_USE_EMOJI")
+	useEmoji := co.Config.UseEmoji
 	if useEmoji == "true" {
 		result.WriteString(emoji)
 		result.WriteString(" ")
@@ -120,8 +122,8 @@ func prepareTitle(input string, isDraft bool) string {
 
 	return result.String()
 }
-func getEmoji(isDraft bool) string {
-	useEmoji := os.Getenv("GH_PR_USE_EMOJI")
+func (co *CliOutputHandler) getEmoji(isDraft bool) string {
+	useEmoji := co.Config.UseEmoji
 	if useEmoji == "false" {
 		return ""
 	}

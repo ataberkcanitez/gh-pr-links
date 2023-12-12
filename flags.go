@@ -16,16 +16,23 @@ var styles = map[string]bool{
 	"StyleCompactClassic": true,
 }
 
-func handleFlags() {
+func handleOptions() Config {
 	helpFlag := flag.Bool("help", false, "Shows help message")
 	styleFlag := flag.String("style", "", "Sets the style of the output. Possible values: StyleCompactLite, StyleUnicode, StyleDefault, StyleCompact, StyleMarkdown, StyleRounded, StyleCompactClassic")
 	useEmojiFlag := flag.String("use-emoji", "", "Use emoji in output")
 	flag.Parse()
 
-	handleHelp(*helpFlag)
-	handleStyle(*styleFlag)
-	handleEmoji(*useEmojiFlag)
+	config, err := ReadConfig()
+	if err != nil {
+		fmt.Printf("Error: failed to read config file: %v\n", err)
+		os.Exit(1)
+	}
 
+	handleHelp(*helpFlag)
+	handleStyle(*styleFlag, config)
+	handleEmoji(*useEmojiFlag, config)
+
+	return *config
 }
 
 func handleHelp(help bool) {
@@ -36,7 +43,7 @@ func handleHelp(help bool) {
 
 }
 
-func handleStyle(selectedStyle string) {
+func handleStyle(selectedStyle string, config *Config) {
 	if selectedStyle == "" {
 		return
 	}
@@ -45,32 +52,28 @@ func handleStyle(selectedStyle string) {
 		os.Exit(1)
 	}
 
-	err := os.Setenv("GH_PR_STYLE", selectedStyle)
+	config.Style = selectedStyle
+	err := UpdateConfig(config)
 	if err != nil {
-		fmt.Printf("Error: failed to set GH_PR_STYLE environment variable: %v\n", err)
-		return
+		fmt.Printf("Error: failed to update config file: %v\n", err)
+		os.Exit(1)
 	}
 }
 
-func handleEmoji(useEmoji string) {
+func handleEmoji(useEmoji string, config *Config) {
 	if useEmoji == "" {
 		return
 	}
-	switch useEmoji {
-	case "true":
-		err := os.Setenv("GH_PR_USE_EMOJI", "true")
-		if err != nil {
-			fmt.Printf("Error: failed to set GH_PR_USE_EMOJI environment variable: %v\n", err)
-			return
-		}
-	case "false":
-		err := os.Setenv("GH_PR_USE_EMOJI", "false")
-		if err != nil {
-			fmt.Printf("Error: failed to set GH_PR_USE_EMOJI environment variable: %v\n", err)
-			return
-		}
-	default:
+
+	if useEmoji != "true" && useEmoji != "false" {
 		fmt.Println("Error: use-emoji value is invalid. Possible values: true, false")
+		os.Exit(1)
+	}
+
+	config.UseEmoji = useEmoji
+	err := UpdateConfig(config)
+	if err != nil {
+		fmt.Printf("Error: failed to update config file: %v\n", err)
 		os.Exit(1)
 	}
 }

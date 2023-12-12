@@ -6,9 +6,8 @@ import (
 )
 
 func main() {
-	handleFlags()
+	options := handleOptions()
 	githubService := &GitHubService{}
-	cliOutputHandler := &CliOutputHandler{}
 
 	pullRequests, err := githubService.GetOpenPullRequests()
 	if err != nil {
@@ -20,5 +19,11 @@ func main() {
 		fmt.Println("No PR to show.")
 		return
 	}
-	cliOutputHandler.PrintPullRequests(pullRequests)
+
+	cliOutputHandler := &CliOutputHandler{
+		prs:    pullRequests,
+		Config: options,
+	}
+	cliOutputHandler.PrintPullRequests()
+
 }
