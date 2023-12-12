@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	handleFlags()
 	githubService := &GitHubService{}
 	cliOutputHandler := &CliOutputHandler{}
 

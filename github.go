@@ -1,41 +1,45 @@
 package main
 
 import (
-	"bufio"
+	"encoding/json"
 	"fmt"
 	"github.com/cli/go-gh/v2"
-	"strings"
+	"time"
 )
 
 type GitHubService struct{}
 
 type PullRequest struct {
-	Repo   string
-	Id     string
-	Status string
-	Title  string
+	Author     Author     `json:"author"`
+	CreatedAt  time.Time  `json:"createdAt"`
+	IsDraft    bool       `json:"isDraft"`
+	Number     int        `json:"number"`
+	Repository Repository `json:"repository"`
+	State      string     `json:"state"`
+	Title      string     `json:"title"`
+	URL        string     `json:"url"`
+}
+
+type Author struct {
+	ID    string `json:"id"`
+	IsBot bool   `json:"is_bot"`
+	Login string `json:"login"`
+	Type  string `json:"type"`
+	URL   string `json:"url"`
+}
+
+type Repository struct {
+	Name          string `json:"name"`
+	NameWithOwner string `json:"nameWithOwner"`
 }
 
 func (gs *GitHubService) GetOpenPullRequests() ([]PullRequest, error) {
-	prs, _, err := gh.Exec("search", "prs", "--review-requested", "@me", "--state", "open")
+	prs, _, err := gh.Exec("search", "prs", "--review-requested", "@me", "--state", "open", "--json", "repository,author,isDraft,createdAt,title,url,number")
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute gh command: %w", err)
 	}
-	return parsePullRequests(prs.String()), nil
-}
+	var pullRequests []PullRequest
 
-func parsePullRequests(prLine string) []PullRequest {
-	var prs []PullRequest
-	scanner := bufio.NewScanner(strings.NewReader(prLine))
-	for scanner.Scan() {
-		line := strings.Split(scanner.Text(), "\t")
-		pr := PullRequest{
-			Repo:   line[0],
-			Id:     line[1],
-			Status: line[2],
-			Title:  line[3],
-		}
-		prs = append(prs, pr)
-	}
-	return prs
+	json.Unmarshal([]byte(prs.String()), &pullRequests)
+	return pullRequests, nil
 }

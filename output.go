@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/alexeyco/simpletable"
+	"os"
 	"strings"
 )
 
@@ -11,41 +12,100 @@ type CliOutputHandler struct{}
 func (co *CliOutputHandler) PrintPullRequests(prs []PullRequest) {
 	table := simpletable.New()
 	table.Header = prepareHeader()
-	for _, row := range prs {
-		link := prepareLink(row.Repo, row.Id)
-		title := prepareTitle(row.Title)
+	for _, pr := range prs {
+		title := prepareTitle(pr.Title, pr.IsDraft)
+		author := prepareAuthor(pr.Author.Login, pr.IsDraft)
+		url := prepareUrl(pr.URL, pr.IsDraft)
+		owner := prepareOwner(pr.Repository.NameWithOwner, pr.IsDraft)
 		r := []*simpletable.Cell{
-			{Text: row.Repo},
-			{Text: row.Id},
-			{Text: title},
-			{Text: link},
+			{Align: simpletable.AlignLeft, Text: owner},
+			{Align: simpletable.AlignLeft, Text: title},
+			{Align: simpletable.AlignLeft, Text: author},
+			{Align: simpletable.AlignLeft, Text: url},
 		}
 		table.Body.Cells = append(table.Body.Cells, r)
 	}
-	table.SetStyle(simpletable.StyleUnicode)
+
+	style := getStyle()
+	table.SetStyle(style)
 	fmt.Println(table.String())
+}
+
+func getStyle() *simpletable.Style {
+	selectedStyle := os.Getenv("GH_PR_STYLE")
+	switch selectedStyle {
+	case "StyleCompactLite":
+		return simpletable.StyleCompactLite
+	case "StyleUnicode":
+		return simpletable.StyleUnicode
+	case "StyleDefault":
+		return simpletable.StyleDefault
+	case "StyleCompact":
+		return simpletable.StyleCompact
+	case "StyleMarkdown":
+		return simpletable.StyleMarkdown
+	case "StyleRounded":
+		return simpletable.StyleRounded
+	case "StyleCompactClassic":
+		return simpletable.StyleCompactClassic
+	default:
+		return simpletable.StyleRounded
+	}
+}
+
+func prepareOwner(owner string, draft bool) string {
+	textColor := green
+	if draft {
+		textColor = gray
+	}
+	return textColor(owner)
+}
+
+func prepareUrl(url string, draft bool) string {
+	urlColor := blue
+	if draft {
+		urlColor = gray
+	}
+	return urlColor(url)
+}
+
+func prepareAuthor(login string, draft bool) string {
+	textColor := green
+	if draft {
+		textColor = gray
+	}
+	return textColor(login)
 }
 
 func prepareHeader() *simpletable.Header {
 	return &simpletable.Header{
 		Cells: []*simpletable.Cell{
 			{Align: simpletable.AlignCenter, Text: "REPO"},
-			{Align: simpletable.AlignCenter, Text: "ID"},
 			{Align: simpletable.AlignCenter, Text: "TITLE"},
+			{Align: simpletable.AlignCenter, Text: "AUTHOR"},
 			{Align: simpletable.AlignCenter, Text: "LINK"},
 		},
 	}
 }
 
-func prepareLink(repo, id string) string {
-	return fmt.Sprintf("https://www.github.com/%s/pull/%s", repo, id)
-}
+func prepareTitle(input string, isDraft bool) string {
+	textColor := green
+	if isDraft {
+		textColor = gray
+	}
+	emoji := getEmoji(isDraft)
 
-func prepareTitle(input string) string {
 	const maxCharacters = 40
 	var result strings.Builder
 	var count int
 	words := strings.Fields(input)
+
+	useEmoji := os.Getenv("GH_PR_USE_EMOJI")
+	if useEmoji == "true" {
+		result.WriteString(emoji)
+		result.WriteString(" ")
+		count += 2
+	}
 
 	for _, word := range words {
 		wordLen := len(word)
@@ -53,10 +113,21 @@ func prepareTitle(input string) string {
 			result.WriteString("\n")
 			count = 0
 		}
-		result.WriteString(word)
+		result.WriteString(textColor(word))
 		result.WriteString(" ")
 		count += wordLen + 1
 	}
 
 	return result.String()
+}
+func getEmoji(isDraft bool) string {
+	useEmoji := os.Getenv("GH_PR_USE_EMOJI")
+	if useEmoji == "false" {
+		return ""
+	}
+
+	if isDraft {
+		return "\U0001F527"
+	}
+	return "\U0001F44C"
 }
