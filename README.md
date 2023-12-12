@@ -23,6 +23,7 @@ $ gh pr-links
 
 ### Options
 
+* `--help`: Show help for command.
 * `--style <string>`: Sets the style of the output. Possible values include `StyleCompactLite`, `StyleUnicode`, `StyleDefault`, `StyleCompact`, `StyleMarkdown`, `StyleRounded`, and `StyleCompactClassic`.
 * `--use-emoji <bool>`: Use emoji in the output. Possible values are `true` or `false`.
 
@@ -46,7 +47,7 @@ Here is some example outputs for different styles:
 ![example-output](assets/outputExamples/compact%20-%20no-emoji.png)
 ![example-output](assets/outputExamples/compact%20-%20with-emoji.png)
 
-![example-output](assets/outputExamples/compactClassic%20-%20no emoji.png)
+![example-output](assets/outputExamples/compactClassic%20-%20no%20emoji.png)
 ![example-output](assets/outputExamples/compactClassic%20-%20with-emoji.png)
 
 ![example-output](assets/outputExamples/markdown%20-%20no-emoji.png)
