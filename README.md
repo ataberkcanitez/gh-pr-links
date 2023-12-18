@@ -23,9 +23,9 @@ $ gh pr-links
 
 ### Options
 
-* `--help`: Show help for command.
-* `--style <string>`: Sets the style of the output. Possible values include `StyleCompactLite`, `StyleUnicode`, `StyleDefault`, `StyleCompact`, `StyleMarkdown`, `StyleRounded`, and `StyleCompactClassic`.
-* `--use-emoji <bool>`: Use emoji in the output. Possible values are `true` or `false`.
+* `-h --help`: Show help for command.
+* `-s --style <string>`: Sets the style of the output. Possible values include `StyleCompactLite`, `StyleUnicode`, `StyleDefault`, `StyleCompact`, `StyleMarkdown`, `StyleRounded`, and `StyleCompactClassic`.
+* `-u --use-emoji <bool>`: Use emoji in the output. Possible values are `true` or `false`.
 
 Options Example:
 ```bash

@@ -16,10 +16,21 @@ var styles = map[string]bool{
 	"StyleCompactClassic": true,
 }
 
+var (
+	helpFlag     bool
+	styleFlag    string
+	useEmojiFlag string
+)
+
 func handleOptions() Config {
-	helpFlag := flag.Bool("help", false, "Shows help message")
-	styleFlag := flag.String("style", "", "Sets the style of the output. Possible values: StyleCompactLite, StyleUnicode, StyleDefault, StyleCompact, StyleMarkdown, StyleRounded, StyleCompactClassic")
-	useEmojiFlag := flag.String("use-emoji", "", "Use emoji in output")
+	flag.BoolVar(&helpFlag, "help", false, "Shows help message")
+	flag.BoolVar(&helpFlag, "h", false, "Shows help message")
+
+	flag.StringVar(&styleFlag, "style", "", "Sets the style of the output. Possible values: StyleCompactLite, StyleUnicode, StyleDefault, StyleCompact, StyleMarkdown, StyleRounded, StyleCompactClassic")
+	flag.StringVar(&styleFlag, "s", "", "Sets the style of the output. Possible values: StyleCompactLite, StyleUnicode, StyleDefault, StyleCompact, StyleMarkdown, StyleRounded, StyleCompactClassic")
+
+	flag.StringVar(&useEmojiFlag, "use-emoji", "", "Use emoji in output")
+	flag.StringVar(&useEmojiFlag, "u", "", "Use emoji in output")
 	flag.Parse()
 
 	config, err := ReadConfig()
@@ -28,9 +39,9 @@ func handleOptions() Config {
 		os.Exit(1)
 	}
 
-	handleHelp(*helpFlag)
-	handleStyle(*styleFlag, config)
-	handleEmoji(*useEmojiFlag, config)
+	handleHelp(helpFlag)
+	handleStyle(styleFlag, config)
+	handleEmoji(useEmojiFlag, config)
 
 	return *config
 }
@@ -79,12 +90,12 @@ func handleEmoji(useEmoji string, config *Config) {
 }
 
 func printHelp() {
-	fmt.Println("gh-pr is a command line tool to show your open and review requested pull requests.")
-	fmt.Println("Usage: gh-pr [options]")
+	fmt.Println("pr-links is a command line tool to show your open and review requested pull requests.")
+	fmt.Println("Usage: gh pr-links [options]")
 	fmt.Println("Options:")
-	fmt.Println("  --help\t\tShows help message")
-	fmt.Println("  --style <string>\tSets the style of the output. Possible values: StyleCompactLite, StyleUnicode, StyleDefault, StyleCompact, StyleMarkdown, StyleRounded, StyleCompactClassic")
-	fmt.Println("  --use-emoji <bool>\tUse emoji in output. Possible values: true, false")
+	fmt.Println("  -h, --help\t\t\tShows help message")
+	fmt.Println("  -s, --style <string>\t\tSets the style of the output. Possible values: StyleCompactLite, StyleUnicode, StyleDefault, StyleCompact, StyleMarkdown, StyleRounded, StyleCompactClassic")
+	fmt.Println("  -u, --use-emoji <bool>\tUse emoji in output. Possible values: true, false")
 	fmt.Println("\nConfiguration: gh pr-links --style=StyleCompactLite --use-emoji=true")
 	fmt.Println("Usage: gh pr-links")
 }
