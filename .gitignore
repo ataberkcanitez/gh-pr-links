@@ -1,2 +1,78 @@
 /gh-pr-links
 /gh-pr-links.exe
+
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace and build artifacts
+/bin/
+/pkg/
+/cover.out
+
+# GoLand-specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+/out/
+
+# Logs
+*.log
+*.log.*
+
+# Environment variables
+.env
+.env.*
+
+# Test artifacts
+*.test
+*.prof
+*.cov
+*.coverprofile
+
+# Cache files
+*.cache
+*.tmp
+*.swp
+
+# Docker
+docker-compose.override.yml
+
+# Ignoring compiled files and temporary build directories
+**/dist/
+**/tmp/
+**/build/
+**/release/
+
+# Exclude IDE index/cache
+/.vscode/
+*.code-workspace
+
+# Ignore coverage reports
+/coverage/
+*.lcov
+*.coverprofile
+*.cov
+
+# AWS credentials
+.aws/
+
+# Git hooks
+.hooks/
+
+# Node modules (if using frontend code in the same repo)
+node_modules/
+
+# Ignore lock files for dependency managers
+go.sum
+
+# Optional: If using Go modules, ignore module cache (optional, if needed)
+/.gomodcache/
