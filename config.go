@@ -36,6 +36,10 @@ func ReadConfig() (*Config, error) {
 
 	var config Config
 	err = json.Unmarshal(data, &config)
+	if config.Organization == "" {
+		config.Organization = "-"
+		UpdateConfig(&config)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -59,8 +63,9 @@ func UpdateConfig(newConfig *Config) error {
 
 func CreateDefaultConfig() {
 	defaultConfig := &Config{
-		Style:    "StyleRounded",
-		UseEmoji: "true",
+		Style:        "StyleRounded",
+		UseEmoji:     "true",
+		Organization: "-",
 	}
 
 	UpdateConfig(defaultConfig)

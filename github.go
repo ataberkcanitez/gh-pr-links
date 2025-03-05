@@ -44,7 +44,7 @@ func (gs *GitHubService) GetOpenPullRequests(cfg Config) ([]PullRequest, error) 
 	organizations := strings.Split(cfg.Organization, "|")
 	for _, pr := range pullRequests {
 		for _, organization := range organizations {
-			prOrg := strings.Split(organization, "/")[0]
+			prOrg := strings.Split(pr.Repository.NameWithOwner, "/")[0]
 			if prOrg == organization {
 				filteredPRs = append(filteredPRs, pr)
 				break
