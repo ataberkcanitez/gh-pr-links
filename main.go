@@ -9,7 +9,7 @@ func main() {
 	options := handleOptions()
 	githubService := &GitHubService{}
 
-	pullRequests, err := githubService.GetOpenPullRequests()
+	pullRequests, err := githubService.GetOpenPullRequests(options)
 	if err != nil {
 		fmt.Println("Error:", err)
 		os.Exit(1)
