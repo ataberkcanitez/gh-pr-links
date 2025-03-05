@@ -8,9 +8,12 @@ import (
 
 const fileName = "gh-pr-links-configuration.json"
 
+const BypassFilter = "-"
+
 type Config struct {
-	Style    string `json:"style"`
-	UseEmoji string `json:"useEmoji"`
+	Style        string `json:"style"`
+	UseEmoji     string `json:"useEmoji"`
+	Organization string `json:"organization"`
 }
 
 func getConfigFileName() string {
