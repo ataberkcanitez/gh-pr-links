@@ -1,6 +1,6 @@
 module github.com/ataberkcanitez/gh-pr-links
 
-go 1.20
+go 1.25.4
 
 require (
 	github.com/alexeyco/simpletable v1.0.0
