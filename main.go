@@ -1,29 +1,33 @@
+// Command gh-pr-links is a GitHub CLI extension that lists the open pull
+// requests awaiting your review, together with their links.
 package main
 
 import (
 	"fmt"
 	"os"
+
+	"github.com/ataberkcanitez/gh-pr-links/internal/cli"
+	"github.com/ataberkcanitez/gh-pr-links/internal/config"
+	"github.com/ataberkcanitez/gh-pr-links/internal/github"
 )
 
 func main() {
-	options := handleOptions()
-	githubService := &GitHubService{}
+	os.Exit(run())
+}
 
-	pullRequests, err := githubService.GetOpenPullRequests(options)
+func run() int {
+	path, err := config.DefaultPath()
 	if err != nil {
-		fmt.Println("Error:", err)
-		os.Exit(1)
+		fmt.Printf("Error: failed to read config file: %v\n", err)
+		return cli.ExitError
 	}
 
-	if len(pullRequests) == 0 {
-		fmt.Println("No PR to show.")
-		return
+	app := &cli.App{
+		Name:   os.Args[0],
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+		Config: config.NewStore(path),
+		PRs:    github.NewClient(),
 	}
-
-	cliOutputHandler := &CliOutputHandler{
-		prs:    pullRequests,
-		Config: options,
-	}
-	cliOutputHandler.PrintPullRequests()
-
+	return app.Run(os.Args[1:])
 }

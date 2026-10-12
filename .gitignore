@@ -71,8 +71,5 @@ docker-compose.override.yml
 # Node modules (if using frontend code in the same repo)
 node_modules/
 
-# Ignore lock files for dependency managers
-go.sum
-
 # Optional: If using Go modules, ignore module cache (optional, if needed)
 /.gomodcache/
