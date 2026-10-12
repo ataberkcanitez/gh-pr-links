@@ -26,6 +26,9 @@ $ gh pr-links
 * `-h --help`: Show help for command.
 * `-s --style <string>`: Sets the style of the output. Possible values include `StyleCompactLite`, `StyleUnicode`, `StyleDefault`, `StyleCompact`, `StyleMarkdown`, `StyleRounded`, and `StyleCompactClassic`.
 * `-u --use-emoji <bool>`: Use emoji in the output. Possible values are `true` or `false`.
+* `-o --org <string>`: Only show pull requests from the given organization. Separate multiple organizations with `|` (e.g. `--org="acme|globex"`), or use `-` to remove the filter.
+
+Your choices are saved to `~/gh-pr-links-configuration.json`, so you only need to set them once.
 
 Options Example:
 ```bash
@@ -67,6 +70,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) f
 
 - GitHub CLI for providing the foundation for interacting with GitHub from the command line.
 - alexeyco/simpletable for simplifying the creation of formatted tables in the console.
+
+### Development
+
+```bash
+go test ./...            # run the tests
+go build -o gh-pr-links . && gh extension install .   # try your local build
+```
+
+The code is organised as:
+
+* `main.go` – wires everything together.
+* `internal/cli` – flag parsing and the command flow.
+* `internal/config` – reading and writing the configuration file.
+* `internal/github` – fetching pull requests via `gh` and filtering them.
+* `internal/render` – drawing the table.
 
 ### Contributing
 
